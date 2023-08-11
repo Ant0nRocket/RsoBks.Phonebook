@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>МУП "БКС" - Справочник</title>
+
+  <style rel="stylesheet">
+    body {
+      margin-left: 15%;
+      margin-right: 15%;
+      margin-top: 5pt;
+      align-content: center;
+    }
+
+    table {
+      caption-side: bottom;
+      border-collapse: collapse;
+    }
+
+    td {
+      padding: 5pt;
+    }
+
+    thead {
+      font-weight: bold;
+      color: navy;
+      background-color: lightblue;
+    }
+
+    .inputBox {
+      margin-top: 10pt;
+      margin-bottom: 10pt;
+      width: 350pt;
+      padding: 5pt;
+      font-size: 20pt;
+    }
+  </style>
+</head>
+
+<body>
+  <input id="filter_value" type="text" placeholder="ПОИСК В СПРАВОЧНИКЕ...." onkeyup="populatePhonebook()" class="inputBox" />
+
+  <table id="tbl_phonebook" border="1" width="100%">
+    <thead>
+      <td>Отдел</td>
+      <td>Должность</td>
+      <td>Имя</td>
+      <td width="150">Телефон(ы)</td>
+      <td width="30">Добавочный 62-900</td>
+      <td width="30">Внутренняя связь</td>
+      <td width="150">Электронная почта</td>
+    </thead>
+  </table>
+
+  <script lang="JavaScript">
+    function populatePhonebook() {
+
+      var phonebookTable = document.getElementById('tbl_phonebook'); // находим тело таблицы в DOM-дереве
+      var filterInput = document.getElementById('filter_value');
+      var filter = filterInput.value.toLowerCase();
+
+      // чистим старую таблицу
+      while (phonebookTable.rows.length > 1)
+        phonebookTable.deleteRow(1);
+
+      let plainphonebook =
+        "АУП*Директор*КОЖЕВНИКОВ_Иван Анатольевич*2-14-78*101*110*KozhevnikovIA@rsobks.ru|" +
+        "АУП*Главный инженер*ТАРАСОВ_Сергей Владимирович*2-14-77_+7 (651) 960-05-05*150*111*TarasovSV@rsobks.ru|" +
+        "АУП*Специалист по закупкам*ЕВТЕЕВА_Ольга Артуровна*+7 (908) 055-93-23*103**EvteevaOA@rsobks.ru";
+
+      var lines = plainphonebook.split('|'); // Бьём справочник через символ '|' дабы получить строки нашей книги.
+
+      for (var i = 0; i < lines.length; i++) {
+
+        console.log(filter.length);
+        console.log(lines[i].indexOf(filter));
+
+        if (filter.length > 0 && lines[i].toLowerCase().indexOf(filter) == 0) continue;
+
+
+        // Разбиваем внутренние поля строки
+        var parts = lines[i].split('*');
+
+        // Создаём строку таблицы
+        var tableRow = document.createElement('tr');
+
+        // Создаём ячейки таблицы
+        var td_division = document.createElement('td');
+        var td_post = document.createElement('td');
+        var td_name = document.createElement('td');
+        var td_phones = document.createElement('td');
+        var td_phone_62900 = document.createElement('td');
+        var td_phone_inner = document.createElement('td');
+        var td_emails = document.createElement('td');
+
+        // Создаем контент
+        td_division.appendChild(document.createTextNode(parts[0]));
+        td_post.appendChild(document.createTextNode(parts[1]));
+        td_name.appendChild(document.createTextNode(parts[2]));
+        td_phones.appendChild(document.createTextNode(parts[3]));
+        td_phone_62900.appendChild(document.createTextNode(parts[4]));
+        td_phone_inner.appendChild(document.createTextNode(parts[5]));
+        //td_emails.appendChild(document.createTextNode(parts[6]));
+        td_emails.innerHTML = '<a href="mailto:' + parts[6] + '">' + parts[6] + '</a>';
+
+        // Добавляем ячейки с контентом в строку
+        tableRow.appendChild(td_division);
+        tableRow.appendChild(td_post);
+        tableRow.appendChild(td_name);
+        tableRow.appendChild(td_phones);
+        tableRow.appendChild(td_phone_62900);
+        tableRow.appendChild(td_phone_inner);
+        tableRow.appendChild(td_emails);
+
+        // Удалим знак "земля", заменив его переводом строки
+        tableRow.innerHTML = tableRow.innerHTML.replace(/_/g, '<br />');
+
+        // Добавляем строку к телу таблицы
+        phonebookTable.appendChild(tableRow);
+      }
+    }
+
+    // Населяем таблицу
+    populatePhonebook();
+
+  </script>
+</body>
+
+</html>
