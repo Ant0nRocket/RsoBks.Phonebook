@@ -40,7 +40,8 @@
 </head>
 
 <body>
-  <input id="filter_value" type="text" placeholder="ПОИСК В СПРАВОЧНИКЕ...." onkeyup="populatePhonebook()" class="inputBox" />
+  <input id="filter_value" type="text" placeholder="ПОИСК В СПРАВОЧНИКЕ...." onkeyup="populatePhonebook()"
+    class="inputBox" />
 
   <table id="tbl_phonebook" border="1" width="100%">
     <thead>
@@ -62,8 +63,10 @@
       var filter = filterInput.value.toLowerCase();
 
       // чистим старую таблицу
-      while (phonebookTable.rows.length > 1)
+      while (phonebookTable.rows.length > 1) {
         phonebookTable.deleteRow(1);
+        console.clear();
+      }
 
       let plainphonebook =
         "АУП*Директор*КОЖЕВНИКОВ_Иван Анатольевич*2-14-78*101*110*KozhevnikovIA@rsobks.ru|" +
@@ -74,10 +77,13 @@
 
       for (var i = 0; i < lines.length; i++) {
 
-        console.log(filter.length);
-        console.log(lines[i].indexOf(filter));
 
-        if (filter.length > 0 && lines[i].toLowerCase().indexOf(filter) == 0) continue;
+        if (filter.length > 0) {
+          var result = lines[i].toLowerCase().indexOf(filter);
+          console.log('result of match "' + filter + '" in "' + lines[i] + '" = ' + result);
+
+          if (result == -1) continue;
+        }
 
 
         // Разбиваем внутренние поля строки
