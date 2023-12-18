@@ -17,6 +17,7 @@
     table {
       caption-side: bottom;
       border-collapse: collapse;
+      font-family: Cascadia Mono;
     }
 
     td {
@@ -40,18 +41,28 @@
 </head>
 
 <body>
-  <input id="filter_value" type="text" placeholder="ПОИСК В СПРАВОЧНИКЕ...." onkeyup="populatePhonebook()"
-    class="inputBox" />
+  <table width="100%">
+    <tr>
+      <td>
+        <input id="filter_value" type="text" placeholder="ПОИСК В СПРАВОЧНИКЕ...." onkeyup="populatePhonebook()"
+          class="inputBox" />
+      </td>
+
+      <td align="right">
+        <a href="/forum/">
+          <font style="font-size: 40pt">&#8962;</font>
+        </a>
+      </td>
+    </tr>
+  </table>
 
   <table id="tbl_phonebook" border="1" width="100%">
     <thead>
-      <td>Отдел</td>
+      <td>Организация,<br />подразделение</td>
       <td>Должность</td>
-      <td>Имя</td>
-      <td width="150">Телефон(ы)</td>
-      <td width="30">Добавочный 62-900</td>
-      <td width="30">Внутренняя связь</td>
-      <td width="150">Электронная почта</td>
+      <td width="250">Имя</td>
+      <td width="250">Телефоны</td>
+      <td width="250">Электронная почта</td>
     </thead>
   </table>
 
@@ -69,9 +80,20 @@
       }
 
       let plainphonebook =
-        "АУП*Директор*КОЖЕВНИКОВ_Иван Анатольевич*2-14-78*101*110*KozhevnikovIA@rsobks.ru|" +
-        "АУП*Главный инженер*ТАРАСОВ_Сергей Владимирович*2-14-77_+7 (651) 960-05-05*150*111*TarasovSV@rsobks.ru|" +
-        "АУП*Специалист по закупкам*ЕВТЕЕВА_Ольга Артуровна*+7 (908) 055-93-23*103**EvteevaOA@rsobks.ru";
+        // МУП "БКС"
+        "МУП \"БКС\"_АУП*Директор*КОЖЕВНИКОВ_Иван Анатольевич*2-14-78_62-900 доб. 101_Внутренний 110*KozhevnikovIA@rsobks.ru|" +
+        "МУП \"БКС\"_АУП*Главный инженер*ТАРАСОВ_Сергей Владимирович*2-14-77_62-900 доб. 150_+7 (651) 960-05-05_Внутренний 111*TarasovSV@rsobks.ru|" +
+        "МУП \"БКС\"_АУП*Специалист по закупкам*ЕВТЕЕВА_Ольга Артуровна*62-900 доб. 103_+7 (908) 055-93-23**EvteevaOA@rsobks.ru|" +
+        "МУП \"БКС\"_АУП*Секретарь-референт*ЯКУШЕВА_Татьяна Петровна*37-670_62-900 доб. 100_Внутренний 102*info@rsobks.ru|" +
+        "МУП \"БКС\"_АУП*Курьер*БАТЫРШИНА_Гузяль Зиннатовна*+7 (904) 885-03-61*|" +
+        "МУП \"БКС\"_АУП*Водитель*НЕПОМНЯЩИЙ_Сергей Андреевич*+7 (951) 979-71-26*|" +
+
+        // Администрация Белоярского района
+        "Администрация Белоярского района*Первый заместитель главы Белоярского района*ОЙНЕЦ_Александр Валерьевич*2-38-22*OinecAV@admbel.ru|" +
+        "Администрация Белоярского района*Начальник отдела тарифной и ценовой политики*ЗЕМФИРОВА_Татьяна Савельевна*62-142*ZemfirovaTS@admbel.ru|" +
+        "Администрация Белоярского района*Ведущий специалист отдела экономики и прогнозирования*КУЛАБУХОВА_Анастасия Сергеевна*62-168*KylabyhovaAS@admbel.ru|" +        
+        "Администрация Белоярского района*Председатель комитета муниципальной собственности*ТРОФИМОВ_Андрей Владимирович*2-18-56*TrofimovAV@admbel.ru"
+        ;
 
       var lines = plainphonebook.split('|'); // Бьём справочник через символ '|' дабы получить строки нашей книги.
 
@@ -80,8 +102,7 @@
 
         if (filter.length > 0) {
           var result = lines[i].toLowerCase().indexOf(filter);
-          console.log('result of match "' + filter + '" in "' + lines[i] + '" = ' + result);
-
+          //console.log('result of match "' + filter + '" in "' + lines[i] + '" = ' + result);
           if (result == -1) continue;
         }
 
@@ -97,8 +118,6 @@
         var td_post = document.createElement('td');
         var td_name = document.createElement('td');
         var td_phones = document.createElement('td');
-        var td_phone_62900 = document.createElement('td');
-        var td_phone_inner = document.createElement('td');
         var td_emails = document.createElement('td');
 
         // Создаем контент
@@ -106,18 +125,13 @@
         td_post.appendChild(document.createTextNode(parts[1]));
         td_name.appendChild(document.createTextNode(parts[2]));
         td_phones.appendChild(document.createTextNode(parts[3]));
-        td_phone_62900.appendChild(document.createTextNode(parts[4]));
-        td_phone_inner.appendChild(document.createTextNode(parts[5]));
-        //td_emails.appendChild(document.createTextNode(parts[6]));
-        td_emails.innerHTML = '<a href="mailto:' + parts[6] + '">' + parts[6] + '</a>';
+        td_emails.innerHTML = '<a href="mailto:' + parts[4] + '">' + parts[4] + '</a>';
 
         // Добавляем ячейки с контентом в строку
         tableRow.appendChild(td_division);
         tableRow.appendChild(td_post);
         tableRow.appendChild(td_name);
         tableRow.appendChild(td_phones);
-        tableRow.appendChild(td_phone_62900);
-        tableRow.appendChild(td_phone_inner);
         tableRow.appendChild(td_emails);
 
         // Удалим знак "земля", заменив его переводом строки
